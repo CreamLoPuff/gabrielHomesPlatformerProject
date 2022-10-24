@@ -18,7 +18,7 @@ public class CameraController : MonoBehaviour
     }
 
     public void Camera()
-    {
+    {  
         transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y, -10);
     }
 }
