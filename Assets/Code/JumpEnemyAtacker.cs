@@ -15,13 +15,20 @@ public class JumpEnemyAtacker : MonoBehaviour
     private bool checkingGround;
     private bool checkingWall;
 
+    public   int currentHealth = 2;
+    private int maxHealth = 2;
+    
+
+
     [Header("Other")]
     private Rigidbody2D enemyRB;
 
 
     void Start()
     {
+        currentHealth = maxHealth;
         enemyRB = GetComponent<Rigidbody2D>();
+       
     }
 
 
@@ -34,7 +41,7 @@ public class JumpEnemyAtacker : MonoBehaviour
 
     void Petrolling()
     {
-        if(!checkingGround || checkingWall)
+        if (!checkingGround || checkingWall)
         {
             if (facingRight)
             {
@@ -60,5 +67,25 @@ public class JumpEnemyAtacker : MonoBehaviour
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(groundCheckPoint.position, circleRadius);
         Gizmos.DrawWireSphere(wallCheckPoint.position, circleRadius);
+    }
+
+    public void OnTriggerEnter2D(Collider2D collider)
+    {
+
+        if (collider.gameObject.tag == "attackArea")
+        {
+            TakeDamage(2);
+        }
+    }
+
+
+        void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+
+        if(currentHealth <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 }

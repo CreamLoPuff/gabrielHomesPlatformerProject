@@ -1,9 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Xml.Serialization;
-using UnityEditor.Timeline;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 public class PlayerController : MonoBehaviour
 {
@@ -13,23 +8,21 @@ public class PlayerController : MonoBehaviour
     private BoxCollider2D boxCollider2d;
     [SerializeField][Range(0, 1)] float LerpConstant;
     [SerializeField] private LayerMask platformsLayerMask;
+
     public int maxHealth = 10;
     public int currentHealth;
     public HealthBar healthBar;
-    private int maxLives = 3;
-    private static int currentLives;
+    public int maxLives = 3;
+    public int currentLives;
     public GameObject GameOverText;
-
 
     void Start()
     {
         currentHealth = maxHealth;
         healthBar.setMaxHelath(maxHealth);
-        
-
-
+        currentLives = maxLives;
     }
-  
+
     private void Awake()
     {
         boxCollider2d = transform.GetComponent<BoxCollider2D>();
@@ -39,16 +32,17 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-      
+
         if (isGrounded() && Input.GetKeyDown(KeyCode.Space))
         {
             rb2d.AddForce(Vector2.up * jumpforce, ForceMode2D.Impulse);
         }
-   
+
+
         float xMove = Input.GetAxisRaw("Horizontal");
         Vector3 newPosition = transform.position;
         newPosition.x += xMove * Time.deltaTime * runSpeed;
-        transform.position = newPosition;   
+        transform.position = newPosition;
 
     }
 
@@ -66,25 +60,38 @@ public class PlayerController : MonoBehaviour
     }
 
     private bool isGrounded()
-    {  
+    {
         RaycastHit2D raycastHit2d = Physics2D.BoxCast(boxCollider2d.bounds.center, boxCollider2d.bounds.size, 0f, Vector2.down, .1f, platformsLayerMask);
         return raycastHit2d.collider != null;
     }
+
+    
 
     void TakeDamage(int damage)
     {
         currentHealth -= damage;
         healthBar.SetHealth(currentHealth);
+        loseLife();
+        GameOver();
     }
- 
 
-    public void die()
+
+    public void loseLife()
     {
-        if (currentHealth == 0)
+        print("loseLife");
+        if (currentHealth <= 0)
         {
-            currentLives -=1;
+            currentLives -= 1;
+
+            print("resetHealth");
+            currentHealth = 10;
+            healthBar.SetHealth(currentHealth);
+
         }
-        else if (currentLives == 0)
+    }
+    public void GameOver() 
+    { 
+        if (currentLives <= 0)
         {
             GameOverText.SetActive(true);
             Time.timeScale = 0;
