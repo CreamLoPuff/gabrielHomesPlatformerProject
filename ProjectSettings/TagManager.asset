@@ -8,6 +8,7 @@ TagManager:
   - enemy
   - gap
   - attackArea
+  - player
   layers:
   - Default
   - TransparentFX

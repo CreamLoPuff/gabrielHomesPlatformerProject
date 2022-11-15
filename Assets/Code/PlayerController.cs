@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -36,6 +37,18 @@ public class PlayerController : MonoBehaviour
         if (isGrounded() && Input.GetKeyDown(KeyCode.Space))
         {
             rb2d.AddForce(Vector2.up * jumpforce, ForceMode2D.Impulse);
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            RestartGame();
+            Time.timeScale = 1;
+
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Quit(); 
         }
 
 
@@ -98,4 +111,13 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(1);
+    }
+    public void Quit()
+    {
+        SceneManager.LoadScene(0);
+    }
 }

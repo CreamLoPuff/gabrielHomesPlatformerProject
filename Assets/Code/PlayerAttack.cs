@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerAttack : MonoBehaviour
 {
@@ -21,12 +22,30 @@ public class PlayerAttack : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.K))
         {
             Attack();
+            attackArea.transform.localScale = new Vector3(1, 1, 1);
         }
 
         if (attacking)
         {
             timer += Time.deltaTime;
-            if(timer >= timeToAttack)
+            if (timer >= timeToAttack)
+            {
+                timer = 0;
+                attacking = false;
+                attackArea.SetActive(attacking);
+            }
+        }
+        if (Input.GetKeyUp(KeyCode.J))
+        {
+            Attack();
+            attackArea.transform.localScale = new Vector3(-1, 1, 1);
+
+        }
+
+        if (attacking)
+        {
+            timer += Time.deltaTime;
+            if (timer >= timeToAttack)
             {
                 timer = 0;
                 attacking = false;
@@ -35,9 +54,12 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
+
     private void Attack()
     {
         attacking = true;
         attackArea.SetActive(attacking);
     }
+
+
 }
