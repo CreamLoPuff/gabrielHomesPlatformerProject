@@ -17,6 +17,8 @@ public class PlayerController : MonoBehaviour
     public int currentLives;
     public GameObject GameOverText;
 
+    public Animator animator;
+
     void Start()
     {
         currentHealth = maxHealth;
@@ -51,12 +53,13 @@ public class PlayerController : MonoBehaviour
             Quit(); 
         }
 
+    }
 
+    private void FixedUpdate()
+    {
         float xMove = Input.GetAxisRaw("Horizontal");
-        Vector3 newPosition = transform.position;
-        newPosition.x += xMove * Time.deltaTime * runSpeed;
-        transform.position = newPosition;
-
+        rb2d.velocity = new Vector2(xMove * 10, rb2d.velocity.y);
+        animator.SetTrigger("moving");
     }
 
     public void OnCollisionEnter2D(Collision2D collision)
