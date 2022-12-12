@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class PlayerAttack : MonoBehaviour
 {
     private GameObject attackArea = default;
+    public Animator animator;
 
     private bool attacking = false;
 
@@ -23,9 +24,15 @@ public class PlayerAttack : MonoBehaviour
         {
             Attack();
             attackArea.transform.localScale = new Vector3(1, 1, 1);
+            animator.SetBool("IsAttacking", false);
         }
 
-        if (attacking)
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            animator.SetBool("IsAttacking", true);
+        }
+            
+    if (attacking)
         {
             timer += Time.deltaTime;
             if (timer >= timeToAttack)
@@ -34,12 +41,6 @@ public class PlayerAttack : MonoBehaviour
                 attacking = false;
                 attackArea.SetActive(attacking);
             }
-        }
-        if (Input.GetKeyUp(KeyCode.J))
-        {
-            Attack();
-            attackArea.transform.localScale = new Vector3(-1, 1, 1);
-
         }
 
         if (attacking)

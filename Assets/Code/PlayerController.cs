@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     private BoxCollider2D boxCollider2d;
     [SerializeField][Range(0, 1)] float LerpConstant;
     [SerializeField] private LayerMask platformsLayerMask;
+    bool facingRight = true;
 
     public int maxHealth = 10;
     public int currentHealth;
@@ -18,6 +19,7 @@ public class PlayerController : MonoBehaviour
     public GameObject GameOverText;
 
     public Animator animator;
+
 
     void Start()
     {
@@ -39,8 +41,12 @@ public class PlayerController : MonoBehaviour
         if (isGrounded() && Input.GetKeyDown(KeyCode.Space))
         {
             rb2d.AddForce(Vector2.up * jumpforce, ForceMode2D.Impulse);
+            animator.SetBool("IsJumping", true);
         }
-
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+                animator.SetBool("IsJumping", false);
+        }
         if (Input.GetKeyDown(KeyCode.R))
         {
             RestartGame();
@@ -52,16 +58,27 @@ public class PlayerController : MonoBehaviour
         {
             Quit(); 
         }
-
     }
 
     private void FixedUpdate()
     {
         float xMove = Input.GetAxisRaw("Horizontal");
         rb2d.velocity = new Vector2(xMove * 10, rb2d.velocity.y);
-        animator.SetTrigger("moving");
+        animator.SetFloat("Speed", Mathf.Abs(rb2d.velocity.x));
+        if(xMove<0 && facingRight)
+        {
+            Flip();
+        }
+        else if (xMove>0 && !facingRight)
+        {
+            Flip();
+        }
     }
-
+    void Flip()
+    {
+        facingRight = !facingRight;
+        transform.Rotate(0, 180, 0);
+    }
     public void OnCollisionEnter2D(Collision2D collision)
     {
 
@@ -75,6 +92,10 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void OnLanding()
+    {
+        animator.SetBool("IsJumping", false);
+    }
     private bool isGrounded()
     {
         RaycastHit2D raycastHit2d = Physics2D.BoxCast(boxCollider2d.bounds.center, boxCollider2d.bounds.size, 0f, Vector2.down, .1f, platformsLayerMask);
